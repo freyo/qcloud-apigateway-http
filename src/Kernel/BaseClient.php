@@ -161,8 +161,9 @@ class BaseClient
             $signature = generate_sign($headers, $this->app->getSecretKey());
 
             $authorization = sprintf(
-                'hmac id="%s", algorithm="hmac-sha1", headers="date source", signature="%s"',
+                'hmac id="%s", algorithm="hmac-sha1", headers="%s", signature="%s"',
                 $this->app->getSecretId(),
+                implode(' ', array_map('strtolower', array_keys($headers))),
                 $signature
             );
 
