@@ -30,7 +30,8 @@ $app = new Application([
         'level' => 'debug',
     ],
     'http' => [
-        'base_uri' => 'http://{id}.{region}.apigateway.myqcloud.com',
+        'base_uri' => 'http://{service-id}.{region}.apigw.tencentcs.com',
+        // 'base_uri' => 'http://{service-id}.{region}.apigateway.myqcloud.com',
     ],
 ]);
 
