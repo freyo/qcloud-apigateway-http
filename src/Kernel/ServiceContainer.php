@@ -136,4 +136,12 @@ class ServiceContainer extends Container
     {
         return $this->getSecretId() && $this->getSecretKey();
     }
+
+    /**
+     * @return string
+     */
+    public function getRegion()
+    {
+        return $this->config->get('region');
+    }
 }
