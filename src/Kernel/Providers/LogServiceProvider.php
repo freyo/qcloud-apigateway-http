@@ -53,7 +53,7 @@ class LogServiceProvider implements ServiceProviderInterface
                     'channels' => [
                         'single' => [
                             'driver' => 'single',
-                            'path' => $app['config']->get('log.file') ?: \sys_get_temp_dir().'/logs/midas.log',
+                            'path' => $app['config']->get('log.file') ?: \sys_get_temp_dir().'/logs/apigateway.log',
                             'level' => $app['config']->get('log.level', 'debug'),
                         ],
                     ],

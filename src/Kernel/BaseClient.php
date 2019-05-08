@@ -7,6 +7,7 @@ use Freyo\ApiGateway\Kernel\ServiceContainer;
 use Freyo\ApiGateway\Kernel\Traits\HasHttpRequests;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use function Freyo\ApiGateway\Kernel\Support\generate_sign;
 
@@ -187,6 +188,10 @@ class BaseClient
     {
         // log
         $this->pushMiddleware($this->logMiddleware(), 'log');
+        // jaeger
+        if ($this->app['config']->has('jaeger')) {
+            $this->pushMiddleware($this->jaegerMiddleware(), 'jaeger');
+        }
     }
 
     /**
@@ -199,6 +204,28 @@ class BaseClient
         $formatter = new MessageFormatter($this->app['config']->get('http.log_template', MessageFormatter::DEBUG));
 
         return Middleware::log($this->app['logger'], $formatter);
+    }
+
+    /**
+     * Jaeger.
+     *
+     * @return \Closure
+     */
+    protected function jaegerMiddleware()
+    {
+        return Middleware::mapRequest(function (RequestInterface $request) {
+
+            if ($headers = $this->app['config']->get('jaeger.headers', [])) {
+
+                $headers = is_callable($headers) ? call_user_func($headers) : $headers;
+
+                foreach ($headers as $name => $value) {
+                    $request = $request->withHeader($name, $value);
+                }
+            }
+
+            return $request;
+        });
     }
 
     /**
