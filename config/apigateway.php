@@ -7,8 +7,8 @@ return [
     'secret_key' => env('APIGATEWAY_SECRET_KEY', ''),
     'region' => env('APIGATEWAY_REGION', ''),
     'log' => [
-        'file' => storage_path('logs/apigateway.log'),
-        'level' => 'debug',
+        'file' => env('APIGATEWAY_LOG_FILE', storage_path('logs/apigateway.log')),
+        'level' => env('APIGATEWAY_LOG_LEVEL', 'debug'),
     ],
 
 ];
