@@ -1,4 +1,6 @@
 # qcloud-apigateway-http
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffreyo%2Fqcloud-apigateway-http.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffreyo%2Fqcloud-apigateway-http?ref=badge_shield)
+
 
 ## Requirement
 
@@ -43,3 +45,6 @@ var_dump($response);
 ## License
 
 MIT
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffreyo%2Fqcloud-apigateway-http.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffreyo%2Fqcloud-apigateway-http?ref=badge_large)
