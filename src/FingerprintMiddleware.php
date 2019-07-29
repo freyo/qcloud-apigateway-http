@@ -20,7 +20,7 @@ class FingerprintMiddleware
     {
         if ($this->fingerprint($request->all()) !== $request->header('fingerprint')) {
             return response()->json([
-                'message' => 'fingerprint cannot be verified, a validate fingerprint header is required',
+                'message' => 'fingerprint does not match',
             ], 401);
         }
 
