@@ -144,4 +144,20 @@ class ServiceContainer extends Container
     {
         return $this->config->get('region');
     }
+
+    /**
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->config->get('source');
+    }
+
+    /**
+     * @return bool
+     */
+    public function withFingerprint()
+    {
+        return (bool)$this->config->get('fingerprint');
+    }
 }

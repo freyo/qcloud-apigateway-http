@@ -10,5 +10,7 @@ return [
         'file' => env('APIGATEWAY_LOG_FILE', storage_path('logs/apigateway.log')),
         'level' => env('APIGATEWAY_LOG_LEVEL', 'debug'),
     ],
+    'source' => env('APIGATEWAY_SOURCE', ''),
+    'fingerprint' => env('APIGATEWAY_FINGERPRINT', false),
 
 ];

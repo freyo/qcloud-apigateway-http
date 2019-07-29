@@ -3,8 +3,8 @@
 namespace Freyo\ApiGateway\Kernel;
 
 use Freyo\ApiGateway\Kernel\Http\Response;
-use Freyo\ApiGateway\Kernel\ServiceContainer;
 use Freyo\ApiGateway\Kernel\Traits\HasHttpRequests;
+use Freyo\ApiGateway\Kernel\Traits\WithFingerprint;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
 use Psr\Http\Message\RequestInterface;
@@ -13,7 +13,7 @@ use function Freyo\ApiGateway\Kernel\Support\generate_sign;
 
 class BaseClient
 {
-    use HasHttpRequests {
+    use WithFingerprint, HasHttpRequests {
         request as performRequest;
     }
 
@@ -52,7 +52,11 @@ class BaseClient
      */
     public function httpGet($url, array $query = [])
     {
-        return $this->request($url, 'GET', ['query' => $query]);
+        $headers = $this->app->withFingerprint()
+            ? ['Fingerprint' => $this->fingerprint($query)]
+            : [];
+
+        return $this->request($url, 'GET', ['query' => $query, 'headers' => $headers]);
     }
 
     /**
@@ -67,7 +71,11 @@ class BaseClient
      */
     public function httpPost($url, array $data = [])
     {
-        return $this->request($url, 'POST', ['form_params' => $data]);
+        $headers = $this->app->withFingerprint()
+            ? ['Fingerprint' => $this->fingerprint($data)]
+            : [];
+
+        return $this->request($url, 'POST', ['form_params' => $data, 'headers' => $headers]);
     }
 
     /**
@@ -83,7 +91,11 @@ class BaseClient
      */
     public function httpPostJson($url, array $data = [], array $query = [])
     {
-        return $this->request($url, 'POST', ['query' => $query, 'json' => $data]);
+        $headers = $this->app->withFingerprint()
+            ? ['Fingerprint' => $this->fingerprint($data + $query)]
+            : [];
+
+        return $this->request($url, 'POST', ['query' => $query, 'json' => $data, 'headers' => $headers]);
     }
 
     /**
@@ -113,7 +125,18 @@ class BaseClient
             $multipart[] = compact('name', 'contents');
         }
 
-        return $this->request($url, 'POST', ['query' => $query, 'multipart' => $multipart, 'connect_timeout' => 30, 'timeout' => 30, 'read_timeout' => 30]);
+        $headers = $this->app->withFingerprint()
+            ? ['Fingerprint' => $this->fingerprint($files + $form + $query)]
+            : [];
+
+        return $this->request($url, 'POST', [
+            'query' => $query,
+            'multipart' => $multipart,
+            'connect_timeout' => 30,
+            'timeout' => 30,
+            'read_timeout' => 30,
+            'headers' => $headers,
+        ]);
     }
 
     /**
@@ -155,7 +178,7 @@ class BaseClient
         if ($this->app->needAuth()) {
 
             $headers = array_merge(
-                ['Date' => gmdate("D, d M Y H:i:s T"), 'Source' => ''],
+                ['Date' => gmdate("D, d M Y H:i:s T"), 'Source' => $this->app->getSource()],
                 $headers
             );
 
