@@ -13,6 +13,9 @@ class Application extends ServiceContainer
      */
     protected $providers = [
         Key\ServiceProvider::class,
+        API\ServiceProvider::class,
+        Service\ServiceProvider::class,
+        UsagePlan\ServiceProvider::class,
     ];
 
 }
