@@ -181,7 +181,7 @@ class BaseClient
             $this->registerHttpMiddlewares();
         }
 
-        $headers = isset($options['headers']) ? $options['headers'] : [];
+        $headers = $options['headers'] ?? [];
 
         if ($this->app->withFingerprint()) {
 
