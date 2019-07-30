@@ -1,18 +1,18 @@
 <div>
   <p align="center">
-    <image src="https://mc.qcloudimg.com/static/img/f16f1ac8e60723fec56675eec2a74f1b/image.svg" width="150" height="150">
+    <image src="https://mc.qcloudimg.com/static/img/f16f1ac8e60723fec56675eec2a74f1b/image.svg" width="250" height="250">
   </p>
   <p align="center">Tencent Cloud API Gateway PHP SDK</p>
   <p align="center">
     <a href="LICENSE">
       <image src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="Software License">
     </a>
-    <a href="https://travis-ci.org/freyo/qcloud-apigateway-http">
+    <!--<a href="https://travis-ci.org/freyo/qcloud-apigateway-http">
       <image src="https://img.shields.io/travis/freyo/qcloud-apigateway-http/master.svg?style=flat-square" alt="Build Status">
     </a>
     <a href="https://scrutinizer-ci.com/g/freyo/qcloud-apigateway-http">
       <image src="https://img.shields.io/scrutinizer/coverage/g/freyo/qcloud-apigateway-http.svg?style=flat-square" alt="Coverage Status">
-    </a>
+    </a>-->
     <a href="https://scrutinizer-ci.com/g/freyo/qcloud-apigateway-http">
       <image src="https://img.shields.io/scrutinizer/g/freyo/qcloud-apigateway-http.svg?style=flat-square" alt="Quality Score">
     </a>
