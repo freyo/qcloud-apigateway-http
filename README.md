@@ -32,7 +32,7 @@
 
 ## Requirement
 
-1. PHP >= 5.6
+1. PHP >= 7.1.3
 2. **[Composer](https://getcomposer.org/)**
 3. openssl 拓展
 
