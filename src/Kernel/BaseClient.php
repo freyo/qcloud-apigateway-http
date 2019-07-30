@@ -52,11 +52,7 @@ class BaseClient
      */
     public function httpGet($url, array $query = [])
     {
-        $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint('GET', $this->baseUri . $url, $query)]
-            : [];
-
-        return $this->request($url, 'GET', ['query' => $query, 'headers' => $headers]);
+        return $this->request($url, 'GET', ['query' => $query]);
     }
 
     /**
@@ -71,11 +67,7 @@ class BaseClient
      */
     public function httpPost($url, array $data = [])
     {
-        $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint('POST', $this->baseUri . $url, $data)]
-            : [];
-
-        return $this->request($url, 'POST', ['form_params' => $data, 'headers' => $headers]);
+        return $this->request($url, 'POST', ['form_params' => $data]);
     }
 
     /**
@@ -90,11 +82,7 @@ class BaseClient
      */
     public function httpPut($url, array $data = [])
     {
-        $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint('PUT', $this->baseUri . $url, $data)]
-            : [];
-
-        return $this->request($url, 'PUT', ['form_params' => $data, 'headers' => $headers]);
+        return $this->request($url, 'PUT', ['form_params' => $data]);
     }
 
     /**
@@ -110,11 +98,7 @@ class BaseClient
      */
     public function httpPostJson($url, array $data = [], array $query = [])
     {
-        $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint('POST', $this->baseUri . $url, $data + $query)]
-            : [];
-
-        return $this->request($url, 'POST', ['query' => $query, 'json' => $data, 'headers' => $headers]);
+        return $this->request($url, 'POST', ['query' => $query, 'json' => $data]);
     }
 
     /**
@@ -130,11 +114,7 @@ class BaseClient
      */
     public function httpPutJson($url, array $data = [], array $query = [])
     {
-        $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint('PUT', $this->baseUri . $url, $data + $query)]
-            : [];
-
-        return $this->request($url, 'PUT', ['query' => $query, 'json' => $data, 'headers' => $headers]);
+        return $this->request($url, 'PUT', ['query' => $query, 'json' => $data]);
     }
 
     /**
@@ -164,18 +144,7 @@ class BaseClient
             $multipart[] = compact('name', 'contents');
         }
 
-        $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint('POST', $this->baseUri . $url, $form + $query)]
-            : [];
-
-        return $this->request($url, 'POST', [
-            'query' => $query,
-            'multipart' => $multipart,
-            'connect_timeout' => 30,
-            'timeout' => 30,
-            'read_timeout' => 30,
-            'headers' => $headers,
-        ]);
+        return $this->request($url, 'POST', ['query' => $query, 'multipart' => $multipart, 'connect_timeout' => 30, 'timeout' => 30, 'read_timeout' => 30]);
     }
 
     /**
@@ -213,6 +182,16 @@ class BaseClient
         }
 
         $headers = isset($options['headers']) ? $options['headers'] : [];
+
+        if ($this->app->withFingerprint()) {
+
+            $headers['Fingerprint'] = $this->fingerprint(
+                $method,
+                $this->baseUri . $url,
+                ($options['json'] ?? []) + ($options['form_params'] ?? []) + ($options['query'] ?? [])
+            );
+
+        }
 
         if ($this->app->needAuth()) {
 
