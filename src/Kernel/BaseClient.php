@@ -53,7 +53,7 @@ class BaseClient
     public function httpGet($url, array $query = [])
     {
         $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint($query)]
+            ? ['Fingerprint' => $this->fingerprint('GET', $this->baseUri . $url, $query)]
             : [];
 
         return $this->request($url, 'GET', ['query' => $query, 'headers' => $headers]);
@@ -72,10 +72,29 @@ class BaseClient
     public function httpPost($url, array $data = [])
     {
         $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint($data)]
+            ? ['Fingerprint' => $this->fingerprint('POST', $this->baseUri . $url, $data)]
             : [];
 
         return $this->request($url, 'POST', ['form_params' => $data, 'headers' => $headers]);
+    }
+
+    /**
+     * PUT request.
+     *
+     * @param string $url
+     * @param array  $data
+     *
+     * @return \Psr\Http\Message\ResponseInterface|\Freyo\ApiGateway\Kernel\Support\Collection|array|object|string
+     *
+     * @throws \Freyo\ApiGateway\Kernel\Exceptions\InvalidConfigException
+     */
+    public function httpPut($url, array $data = [])
+    {
+        $headers = $this->app->withFingerprint()
+            ? ['Fingerprint' => $this->fingerprint('PUT', $this->baseUri . $url, $data)]
+            : [];
+
+        return $this->request($url, 'PUT', ['form_params' => $data, 'headers' => $headers]);
     }
 
     /**
@@ -92,10 +111,30 @@ class BaseClient
     public function httpPostJson($url, array $data = [], array $query = [])
     {
         $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint($data + $query)]
+            ? ['Fingerprint' => $this->fingerprint('POST', $this->baseUri . $url, $data + $query)]
             : [];
 
         return $this->request($url, 'POST', ['query' => $query, 'json' => $data, 'headers' => $headers]);
+    }
+
+    /**
+     * JSON request.
+     *
+     * @param string       $url
+     * @param string|array $data
+     * @param array        $query
+     *
+     * @return \Psr\Http\Message\ResponseInterface|\Freyo\ApiGateway\Kernel\Support\Collection|array|object|string
+     *
+     * @throws \Freyo\ApiGateway\Kernel\Exceptions\InvalidConfigException
+     */
+    public function httpPutJson($url, array $data = [], array $query = [])
+    {
+        $headers = $this->app->withFingerprint()
+            ? ['Fingerprint' => $this->fingerprint('PUT', $this->baseUri . $url, $data + $query)]
+            : [];
+
+        return $this->request($url, 'PUT', ['query' => $query, 'json' => $data, 'headers' => $headers]);
     }
 
     /**
@@ -126,7 +165,7 @@ class BaseClient
         }
 
         $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint($files + $form + $query)]
+            ? ['Fingerprint' => $this->fingerprint('POST', $this->baseUri . $url, $form + $query)]
             : [];
 
         return $this->request($url, 'POST', [
