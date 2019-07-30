@@ -70,7 +70,7 @@ class TencentCloudClient extends BaseClient
      * @param $method
      * @param $url
      * @param array $params
-     * @author freyxiao<freyxiao@dayuw.com>
+     *
      * @return string
      */
     protected function signature($method, $url, array $params = [])

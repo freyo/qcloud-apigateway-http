@@ -184,38 +184,18 @@ class BaseClient
         $headers = $options['headers'] ?? [];
 
         if ($this->app->withFingerprint()) {
-
             $headers['Fingerprint'] = $this->fingerprint(
                 $method,
                 $this->baseUri . $url,
                 ($options['json'] ?? []) + ($options['form_params'] ?? []) + ($options['query'] ?? [])
             );
-
         }
 
         if ($this->app->needAuth()) {
-
-            $headers = array_merge(
-                ['Date' => gmdate("D, d M Y H:i:s T"), 'Source' => $this->app->getSource()],
-                $headers
-            );
-
-            $signature = generate_sign($headers, $this->app->getSecretKey());
-
-            $authorization = sprintf(
-                'hmac id="%s", algorithm="hmac-sha1", headers="%s", signature="%s"',
-                $this->app->getSecretId(),
-                implode(' ', array_map('strtolower', array_keys($headers))),
-                $signature
-            );
-
-            $headers['Authorization'] = $authorization;
-
+            $headers['Authorization'] = $this->authorization($headers);
         }
 
-        $options = array_merge($options, [
-            'headers' => $headers
-        ]);
+        $options = array_merge($options, ['headers' => $headers]);
 
         $response = $this->performRequest($url, $method, $options);
 
@@ -298,5 +278,29 @@ class BaseClient
     protected function wrap($endpoint, $prefix = '')
     {
         return implode('/', [$prefix, $endpoint]);
+    }
+
+    /**
+     * @param array $headers
+     *
+     * @return string
+     */
+    protected function authorization(array $headers)
+    {
+        $headers = array_merge(
+            ['Date' => gmdate("D, d M Y H:i:s T"), 'Source' => $this->app->getSource()],
+            $headers
+        );
+
+        $signature = generate_sign($headers, $this->app->getSecretKey());
+
+        $authorization = sprintf(
+            'hmac id="%s", algorithm="hmac-sha1", headers="%s", signature="%s"',
+            $this->app->getSecretId(),
+            implode(' ', array_map('strtolower', array_keys($headers))),
+            $signature
+        );
+
+        return $authorization;
     }
 }
