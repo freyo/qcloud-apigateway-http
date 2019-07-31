@@ -52,11 +52,7 @@ class BaseClient
      */
     public function httpGet($url, array $query = [])
     {
-        $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint($query)]
-            : [];
-
-        return $this->request($url, 'GET', ['query' => $query, 'headers' => $headers]);
+        return $this->request($url, 'GET', ['query' => $query]);
     }
 
     /**
@@ -71,11 +67,22 @@ class BaseClient
      */
     public function httpPost($url, array $data = [])
     {
-        $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint($data)]
-            : [];
+        return $this->request($url, 'POST', ['form_params' => $data]);
+    }
 
-        return $this->request($url, 'POST', ['form_params' => $data, 'headers' => $headers]);
+    /**
+     * PUT request.
+     *
+     * @param string $url
+     * @param array  $data
+     *
+     * @return \Psr\Http\Message\ResponseInterface|\Freyo\ApiGateway\Kernel\Support\Collection|array|object|string
+     *
+     * @throws \Freyo\ApiGateway\Kernel\Exceptions\InvalidConfigException
+     */
+    public function httpPut($url, array $data = [])
+    {
+        return $this->request($url, 'PUT', ['form_params' => $data]);
     }
 
     /**
@@ -91,11 +98,23 @@ class BaseClient
      */
     public function httpPostJson($url, array $data = [], array $query = [])
     {
-        $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint($data + $query)]
-            : [];
+        return $this->request($url, 'POST', ['query' => $query, 'json' => $data]);
+    }
 
-        return $this->request($url, 'POST', ['query' => $query, 'json' => $data, 'headers' => $headers]);
+    /**
+     * JSON request.
+     *
+     * @param string       $url
+     * @param string|array $data
+     * @param array        $query
+     *
+     * @return \Psr\Http\Message\ResponseInterface|\Freyo\ApiGateway\Kernel\Support\Collection|array|object|string
+     *
+     * @throws \Freyo\ApiGateway\Kernel\Exceptions\InvalidConfigException
+     */
+    public function httpPutJson($url, array $data = [], array $query = [])
+    {
+        return $this->request($url, 'PUT', ['query' => $query, 'json' => $data]);
     }
 
     /**
@@ -125,18 +144,7 @@ class BaseClient
             $multipart[] = compact('name', 'contents');
         }
 
-        $headers = $this->app->withFingerprint()
-            ? ['Fingerprint' => $this->fingerprint($files + $form + $query)]
-            : [];
-
-        return $this->request($url, 'POST', [
-            'query' => $query,
-            'multipart' => $multipart,
-            'connect_timeout' => 30,
-            'timeout' => 30,
-            'read_timeout' => 30,
-            'headers' => $headers,
-        ]);
+        return $this->request($url, 'POST', ['query' => $query, 'multipart' => $multipart, 'connect_timeout' => 30, 'timeout' => 30, 'read_timeout' => 30]);
     }
 
     /**
@@ -173,31 +181,21 @@ class BaseClient
             $this->registerHttpMiddlewares();
         }
 
-        $headers = isset($options['headers']) ? $options['headers'] : [];
+        $headers = $options['headers'] ?? [];
 
-        if ($this->app->needAuth()) {
-
-            $headers = array_merge(
-                ['Date' => gmdate("D, d M Y H:i:s T"), 'Source' => $this->app->getSource()],
-                $headers
+        if ($this->app->withFingerprint()) {
+            $headers['Fingerprint'] = $this->fingerprint(
+                $method,
+                $this->baseUri . $url,
+                ($options['json'] ?? []) + ($options['form_params'] ?? []) + ($options['query'] ?? [])
             );
-
-            $signature = generate_sign($headers, $this->app->getSecretKey());
-
-            $authorization = sprintf(
-                'hmac id="%s", algorithm="hmac-sha1", headers="%s", signature="%s"',
-                $this->app->getSecretId(),
-                implode(' ', array_map('strtolower', array_keys($headers))),
-                $signature
-            );
-
-            $headers['Authorization'] = $authorization;
-
         }
 
-        $options = array_merge($options, [
-            'headers' => $headers
-        ]);
+        if ($this->app->needAuth()) {
+            $headers['Authorization'] = $this->authorization($headers);
+        }
+
+        $options = array_merge($options, ['headers' => $headers]);
 
         $response = $this->performRequest($url, $method, $options);
 
@@ -280,5 +278,29 @@ class BaseClient
     protected function wrap($endpoint, $prefix = '')
     {
         return implode('/', [$prefix, $endpoint]);
+    }
+
+    /**
+     * @param array $headers
+     *
+     * @return string
+     */
+    protected function authorization(array $headers)
+    {
+        $headers = array_merge(
+            ['Date' => gmdate("D, d M Y H:i:s T"), 'Source' => $this->app->getSource()],
+            $headers
+        );
+
+        $signature = generate_sign($headers, $this->app->getSecretKey());
+
+        $authorization = sprintf(
+            'hmac id="%s", algorithm="hmac-sha1", headers="%s", signature="%s"',
+            $this->app->getSecretId(),
+            implode(' ', array_map('strtolower', array_keys($headers))),
+            $signature
+        );
+
+        return $authorization;
     }
 }

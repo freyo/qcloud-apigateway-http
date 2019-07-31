@@ -70,7 +70,7 @@ class TencentCloudClient extends BaseClient
      * @param $method
      * @param $url
      * @param array $params
-     * @author freyxiao<freyxiao@dayuw.com>
+     *
      * @return string
      */
     protected function signature($method, $url, array $params = [])
@@ -81,7 +81,7 @@ class TencentCloudClient extends BaseClient
             $method,
             parse_url($url, PHP_URL_HOST),
             parse_url($url, PHP_URL_PATH),
-            urldecode(http_build_query($params))
+            urldecode(http_build_query($params, '', '&', PHP_QUERY_RFC3986))
         );
 
         return base64_encode(
