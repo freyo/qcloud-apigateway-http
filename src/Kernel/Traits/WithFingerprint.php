@@ -15,11 +15,12 @@ trait WithFingerprint
     {
         ksort($params);
 
-        $srcStr = implode("\n", [
+        $srcStr = sprintf('%s%s%s?%s',
             $method,
-            parse_url($url, PHP_URL_HOST) . parse_url($url, PHP_URL_PATH),
-            json_encode($params, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
-        ]);
+            parse_url($url, PHP_URL_HOST),
+            parse_url($url, PHP_URL_PATH),
+            urldecode(http_build_query($params, '', '&', PHP_QUERY_RFC3986))
+        );
 
         return hash('sha256', $srcStr);
     }

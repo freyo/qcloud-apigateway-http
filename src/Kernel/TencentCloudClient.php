@@ -81,7 +81,7 @@ class TencentCloudClient extends BaseClient
             $method,
             parse_url($url, PHP_URL_HOST),
             parse_url($url, PHP_URL_PATH),
-            urldecode(http_build_query($params))
+            urldecode(http_build_query($params, '', '&', PHP_QUERY_RFC3986))
         );
 
         return base64_encode(
