@@ -181,7 +181,10 @@ class BaseClient
             $this->registerHttpMiddlewares();
         }
 
-        $headers = $options['headers'] ?? [];
+        $headers = array_merge(
+            ['Date' => gmdate("D, d M Y H:i:s T"), 'Source' => $this->app->getSource()],
+            $options['headers'] ?? []
+        );
 
         if ($this->app->withFingerprint()) {
             $headers['Fingerprint'] = $this->fingerprint(
@@ -287,11 +290,6 @@ class BaseClient
      */
     protected function authorization(array $headers)
     {
-        $headers = array_merge(
-            ['Date' => gmdate("D, d M Y H:i:s T"), 'Source' => $this->app->getSource()],
-            $headers
-        );
-
         $signature = generate_sign($headers, $this->app->getSecretKey());
 
         $authorization = sprintf(
