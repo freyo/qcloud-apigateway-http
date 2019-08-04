@@ -19,9 +19,31 @@ trait WithFingerprint
             $method,
             parse_url($url, PHP_URL_HOST),
             parse_url($url, PHP_URL_PATH),
-            urldecode(http_build_query($params, '', '&', PHP_QUERY_RFC3986))
+            $this->canonicalize($params)
         );
 
         return hash('sha256', $srcStr);
+    }
+
+    /**
+     * @param array $input
+     * @param string $keyPrefix
+     *
+     * @return string
+     */
+    protected function canonicalize(array $input, $keyPrefix = '')
+    {
+        $resource = [];
+
+        foreach ($input as $key => $value) {
+
+            $key = $keyPrefix ? $keyPrefix . '.' . $key : $key;
+
+            $resource[] = is_array($value)
+                ? $this->canonicalize($value, $key)
+                : $key . '=' . $value;
+        }
+
+        return implode('&', $resource);
     }
 }
