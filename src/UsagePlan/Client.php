@@ -29,4 +29,20 @@ class Client extends TencentCloudClient
 
         return $this->httpPost('index.php', $params);
     }
+
+    /**
+     * @param $usagePlanId
+     *
+     * @return array|\Freyo\ApiGateway\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
+     * @throws \Freyo\ApiGateway\Kernel\Exceptions\InvalidConfigException
+     */
+    public function delete($usagePlanId)
+    {
+        $params = [
+            'Action' => 'DeleteUsagePlan',
+            'usagePlanId' => $usagePlanId,
+        ];
+
+        return $this->httpPost('index.php', $params);
+    }
 }
