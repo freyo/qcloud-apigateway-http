@@ -55,6 +55,7 @@ $app = new Application([
     'response_type' => 'collection',
     'secret_key'    => 'your-secret-key',
     'secret_id'     => 'your-secret-id',
+    'region'        => 'your-gateway-region', // e.g., ap-guangzhou
     'log'           => [
         'file'  => __DIR__ . DIRECTORY_SEPARATOR . 'apigateway.log',
         'level' => 'debug',
