@@ -20,7 +20,7 @@ return [
         'expect' => env('APIGATEWAY_HTTP_EXPECT', false),
         'decode_content' => env('APIGATEWAY_HTTP_DECODE_CONTENT', true),
         'connect_timeout' => env('APIGATEWAY_HTTP_CONNECT_TIMEOUT', 0),
-        'timeout' => env('APIGATEWAY_HTTP_TIMEOUT', 0),
+        'timeout' => env('APIGATEWAY_HTTP_TIMEOUT', 5),
     ],
 
 ];
