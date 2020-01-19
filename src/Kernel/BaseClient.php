@@ -44,7 +44,7 @@ class BaseClient
      * GET request.
      *
      * @param string $url
-     * @param array  $query
+     * @param array $query
      *
      * @return \Psr\Http\Message\ResponseInterface|\Freyo\ApiGateway\Kernel\Support\Collection|array|object|string
      *
@@ -59,7 +59,7 @@ class BaseClient
      * POST request.
      *
      * @param string $url
-     * @param array  $data
+     * @param array $data
      *
      * @return \Psr\Http\Message\ResponseInterface|\Freyo\ApiGateway\Kernel\Support\Collection|array|object|string
      *
@@ -74,7 +74,7 @@ class BaseClient
      * PUT request.
      *
      * @param string $url
-     * @param array  $data
+     * @param array $data
      *
      * @return \Psr\Http\Message\ResponseInterface|\Freyo\ApiGateway\Kernel\Support\Collection|array|object|string
      *
@@ -88,9 +88,9 @@ class BaseClient
     /**
      * JSON request.
      *
-     * @param string       $url
+     * @param string $url
      * @param string|array $data
-     * @param array        $query
+     * @param array $query
      *
      * @return \Psr\Http\Message\ResponseInterface|\Freyo\ApiGateway\Kernel\Support\Collection|array|object|string
      *
@@ -104,9 +104,9 @@ class BaseClient
     /**
      * JSON request.
      *
-     * @param string       $url
+     * @param string $url
      * @param string|array $data
-     * @param array        $query
+     * @param array $query
      *
      * @return \Psr\Http\Message\ResponseInterface|\Freyo\ApiGateway\Kernel\Support\Collection|array|object|string
      *
@@ -121,9 +121,9 @@ class BaseClient
      * Upload file.
      *
      * @param string $url
-     * @param array  $files
-     * @param array  $form
-     * @param array  $query
+     * @param array $files
+     * @param array $form
+     * @param array $query
      *
      * @return \Psr\Http\Message\ResponseInterface|\Freyo\ApiGateway\Kernel\Support\Collection|array|object|string
      *
@@ -144,7 +144,13 @@ class BaseClient
             $multipart[] = compact('name', 'contents');
         }
 
-        return $this->request($url, 'POST', ['query' => $query, 'multipart' => $multipart, 'connect_timeout' => 30, 'timeout' => 30, 'read_timeout' => 30]);
+        return $this->request($url, 'POST', [
+            'query' => $query,
+            'multipart' => $multipart,
+            'connect_timeout' => 30,
+            'timeout' => 30,
+            'read_timeout' => 30
+        ]);
     }
 
     /**
@@ -152,7 +158,7 @@ class BaseClient
      *
      * @param string $url
      * @param string $method
-     * @param array  $options
+     * @param array $options
      *
      * @return ResponseInterface
      *
@@ -168,8 +174,8 @@ class BaseClient
      *
      * @param string $url
      * @param string $method
-     * @param array  $options
-     * @param bool   $returnRaw
+     * @param array $options
+     * @param bool $returnRaw
      *
      * @return \Psr\Http\Message\ResponseInterface|\Freyo\ApiGateway\Kernel\Support\Collection|array|object|string
      *
@@ -244,14 +250,10 @@ class BaseClient
 
                 $headers = is_callable($headers) ? call_user_func($headers) : $headers;
 
-                var_dump($headers);
-
                 foreach ($headers as $name => $value) {
                     $request = $request->withHeader($name, $value);
                 }
             }
-
-            var_dump($request->getHeaders());
 
             return $request;
         });
