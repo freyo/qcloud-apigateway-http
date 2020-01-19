@@ -13,4 +13,14 @@ return [
     'source' => env('APIGATEWAY_SOURCE', ''),
     'fingerprint' => env('APIGATEWAY_FINGERPRINT', false),
 
+    // Guzzle Request Options
+    // See: http://docs.guzzlephp.org/en/stable/request-options.html
+    'http' => [
+        'http_errors' => env('APIGATEWAY_HTTP_ERRORS', false),
+        'expect' => env('APIGATEWAY_HTTP_EXPECT', false),
+        'decode_content' => env('APIGATEWAY_HTTP_DECODE_CONTENT', true),
+        'connect_timeout' => env('APIGATEWAY_HTTP_CONNECT_TIMEOUT', 0),
+        'timeout' => env('APIGATEWAY_HTTP_TIMEOUT', 5),
+    ],
+
 ];

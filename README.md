@@ -66,7 +66,7 @@ $app = new Application([
     ],
 ]);
 
-$response = $app->base_client->request('path/to');
+$response = $app->http_client->request('path/to');
 
 var_dump($response);
 ```
