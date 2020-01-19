@@ -210,12 +210,13 @@ class BaseClient
      */
     protected function registerHttpMiddlewares()
     {
-        // log
-        $this->pushMiddleware($this->logMiddleware(), 'log');
         // jaeger
         if ($this->app['config']->has('jaeger')) {
             $this->pushMiddleware($this->jaegerMiddleware(), 'jaeger');
         }
+
+        // log
+        $this->pushMiddleware($this->logMiddleware(), 'log');
     }
 
     /**
@@ -243,10 +244,14 @@ class BaseClient
 
                 $headers = is_callable($headers) ? call_user_func($headers) : $headers;
 
+                var_dump($headers);
+
                 foreach ($headers as $name => $value) {
                     $request = $request->withHeader($name, $value);
                 }
             }
+
+            var_dump($request->getHeaders());
 
             return $request;
         });
