@@ -15,6 +15,23 @@ class Client extends TencentCloudClient
     }
 
     /**
+     * @param string $serviceId
+     * @param array $options
+     *
+     * @return array|\Freyo\ApiGateway\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
+     * @throws \Freyo\ApiGateway\Kernel\Exceptions\InvalidConfigException
+     */
+    public function lists($serviceId, array $options = [])
+    {
+        $params = [
+            'Action'    => 'DescribeApisStatus',
+            'serviceId' => $serviceId,
+        ];
+
+        return $this->httpPost('index.php', $params + $this->canonicalizeParameters($options));
+    }
+
+    /**
      * @param $apiId
      * @param $serviceId
      *
@@ -24,9 +41,9 @@ class Client extends TencentCloudClient
     public function get($apiId, $serviceId)
     {
         $params = [
-            'Action' => 'DescribeApi',
+            'Action'    => 'DescribeApi',
             'serviceId' => $serviceId,
-            'apiId' => $apiId,
+            'apiId'     => $apiId,
         ];
 
         return $this->httpPost('index.php', $params);
@@ -42,9 +59,9 @@ class Client extends TencentCloudClient
     public function delete($apiId, $serviceId)
     {
         $params = [
-            'Action' => 'DeleteApi',
+            'Action'    => 'DeleteApi',
             'serviceId' => $serviceId,
-            'apiId' => $apiId,
+            'apiId'     => $apiId,
         ];
 
         return $this->httpPost('index.php', $params);
@@ -60,11 +77,11 @@ class Client extends TencentCloudClient
     public function create($serviceId, array $attributes)
     {
         $params = [
-            'Action' => 'CreateApi',
+            'Action'    => 'CreateApi',
             'serviceId' => $serviceId,
         ];
 
-        return $this->httpPost('index.php', $params + $attributes);
+        return $this->httpPost('index.php', $params + $this->canonicalizeParameters($attributes));
     }
 
     /**
@@ -78,11 +95,11 @@ class Client extends TencentCloudClient
     public function update($apiId, $serviceId, array $attributes)
     {
         $params = [
-            'Action' => 'ModifyApi',
+            'Action'    => 'ModifyApi',
             'serviceId' => $serviceId,
-            'apiId' => $apiId,
+            'apiId'     => $apiId,
         ];
 
-        return $this->httpPost('index.php', $params + $attributes);
+        return $this->httpPost('index.php', $params + $this->canonicalizeParameters($attributes));
     }
 }
