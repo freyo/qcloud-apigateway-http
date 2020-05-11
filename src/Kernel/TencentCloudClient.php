@@ -96,9 +96,9 @@ class TencentCloudClient extends BaseClient
     {
         return [
             'Timestamp' => time(),
-            'Nonce' => rand(1, 65535),
-            'SecretId' => $this->app->getSecretId(),
-            'Region' => $this->app->getRegion(),
+            'Nonce'     => rand(1, 65535),
+            'SecretId'  => $this->app->getSecretId(),
+            'Region'    => $this->app->getRegion(),
         ];
     }
 
@@ -122,5 +122,27 @@ class TencentCloudClient extends BaseClient
         }
 
         return implode('&', $resource);
+    }
+
+    /**
+     * @param array $input
+     * @param string $keyPrefix
+     *
+     * @return array
+     */
+    protected function canonicalizeParameters(array $input, $keyPrefix = '')
+    {
+        $resource = [];
+
+        foreach ($input as $key => $value) {
+
+            $key = $keyPrefix ? $keyPrefix . '.' . $key : $key;
+
+            $resource = array_merge($resource, is_array($value)
+                ? $this->canonicalizeParameters($value, $key)
+                : [$key => $value]);
+        }
+
+        return $resource;
     }
 }

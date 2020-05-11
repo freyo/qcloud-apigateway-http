@@ -2,9 +2,17 @@
 
 namespace Freyo\ApiGateway;
 
-use Closure;
 use Freyo\ApiGateway\Kernel\ServiceContainer;
 
+/**
+ * @property Key\Client key
+ * @property API\Client api
+ * @property Service\Client service
+ * @property UsagePlan\Client usagePlan
+ *
+ * Class Application
+ * @package Freyo\ApiGateway
+ */
 class Application extends ServiceContainer
 {
 
