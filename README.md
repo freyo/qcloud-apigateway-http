@@ -52,7 +52,7 @@ include 'vendor/autoload.php';
 use Freyo\ApiGateway\Application;
 
 $app = new Application([
-    'response_type' => 'collection',
+    'response_type' => 'array',
     'secret_key'    => 'your-secret-key',
     'secret_id'     => 'your-secret-id',
     'region'        => 'your-gateway-region', // e.g., ap-guangzhou
@@ -66,7 +66,7 @@ $app = new Application([
     ],
 ]);
 
-$response = $app->http_client->request('path/to');
+$response = $app->base_client->httpGet('path/to');
 
 var_dump($response);
 ```
