@@ -248,7 +248,7 @@ class BaseClient
 
             if ($headers = $this->app['config']->get('jaeger.headers', [])) {
 
-                $headers = is_callable($headers) ? call_user_func($headers) : $headers;
+                $headers = is_callable($headers) ? call_user_func($headers, $request) : $headers;
 
                 foreach ($headers as $name => $value) {
                     $request = $request->withHeader($name, $value);
