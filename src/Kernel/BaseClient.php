@@ -221,6 +221,11 @@ class BaseClient
             $this->pushMiddleware($this->jaegerMiddleware(), 'jaeger');
         }
 
+        // tap
+        if ($this->app['config']->has('tap')) {
+            $this->pushMiddleware($this->tapMiddleware(), 'tap');
+        }
+
         // log
         $this->pushMiddleware($this->logMiddleware(), 'log');
     }
@@ -257,6 +262,19 @@ class BaseClient
 
             return $request;
         });
+    }
+
+    /**
+     * Middleware that invokes a callback before and after sending a request.
+     *
+     * @return \Closure
+     */
+    protected function tapMiddleware()
+    {
+        return Middleware::tap(
+            is_callable($before = $this->app['config']->get('tap.before')) ? $before : null,
+            is_callable($after = $this->app['config']->get('tap.after')) ? $after : null
+        );
     }
 
     /**
